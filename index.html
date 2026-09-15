@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiendita de Don Pepe</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+
+<div id="loginScreen" class="login-screen">
+    <div class="login-card">
+        <div class="logo">TD</div>
+
+        <h1>Tiendita de Don Pepe</h1>
+        <p>Sistema de Control de Inventario</p>
+
+        <form id="loginForm">
+            <label>Usuario</label>
+            <input type="text" id="username" required>
+
+            <label>Contraseña</label>
+            <input type="password" id="password" required>
+
+            <button type="submit">Iniciar sesión</button>
+        </form>
+
+        <small>
+            Demo:<br>
+            Admin: admin / admin123<br>
+            Cajero: cajero / cajero123
+        </small>
+    </div>
+</div>
+
+
+
+<div id="app" class="app hidden">
+
+  
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="logo">TD</div>
+            <div>
+                <strong>Tiendita</strong>
+                <span>Don Pepe</span>
+            </div>
+        </div>
+
+        <nav id="menu">
+
+            <button data-section="dashboard">
+                 Inicio
+            </button>
+
+            <button data-section="inventory">
+                 Inventario
+            </button>
+
+            <button data-section="entries">
+                 Ingresos
+            </button>
+
+            <button data-section="sales">
+                 Ventas / Salidas
+            </button>
+
+            <button data-section="expiry">
+                 Vencimientos
+            </button>
+
+            <button data-section="history" class="admin-only">
+                 Historial
+            </button>
+
+            <button data-section="suppliers">
+                 Proveedores
+            </button>
+
+            <button data-section="reports" class="admin-only">
+                 Reportes
+            </button>
+
+            <button data-section="settings" class="admin-only">
+                 Stock mínimo
+            </button>
+
+        </nav>
+
+        <button id="logoutBtn" class="logout">
+             Cerrar sesión
+        </button>
+
+    </aside>
+
+
+  
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <h2 id="pageTitle">Inicio</h2>
+                <span id="currentUser"></span>
+            </div>
+
+            <div class="user-badge" id="userBadge"></div>
+        </header>
+
+
+     
+        <section id="dashboard" class="section">
+
+            <div class="welcome">
+                <div>
+                    <h1>Panel de control</h1>
+                    <p>
+                        Supervisa el inventario de atún y controla
+                        los movimientos de la tienda.
+                    </p>
+                </div>
+            </div>
+
+            <div class="cards">
+
+                <div class="card">
+                    <span>Stock total</span>
+                    <strong id="totalStock">0</strong>
+                    <small>unidades</small>
+                </div>
+
+                <div class="card warning">
+                    <span>Stock crítico</span>
+                    <strong id="criticalStock">0</strong>
+                    <small>productos</small>
+                </div>
+
+                <div class="card danger">
+                    <span>Próximos a vencer</span>
+                    <strong id="nearExpiry">0</strong>
+                    <small>unidades</small>
+                </div>
+
+                <div class="card success">
+                    <span>Exactitud</span>
+                    <strong id="accuracy">0%</strong>
+                    <small>físico / registrado</small>
+                </div>
+
+            </div>
+
+
+            <div class="grid-2">
+
+                <div class="panel">
+                    <h3>Alertas</h3>
+                    <div id="alerts"></div>
+                </div>
+
+                <div class="panel">
+                    <h3>Indicadores</h3>
+
+                    <div class="indicator">
+                        <div>
+                            <span>Exactitud de inventario</span>
+                            <b id="accuracyText">0%</b>
+                        </div>
+
+                        <div class="progress">
+                            <div id="accuracyBar"></div>
+                        </div>
+                    </div>
+
+                    <div class="indicator">
+                        <div>
+                            <span>Stock crítico</span>
+                            <b id="criticalText">0%</b>
+                        </div>
+
+                        <div class="progress">
+                            <div id="criticalBar"></div>
+                        </div>
+                    </div>
+
+                    <div class="indicator">
+                        <div>
+                            <span>Agotamiento</span>
+                            <b id="exhaustionText">10%</b>
+                        </div>
+
+                        <div class="progress">
+                            <div id="exhaustionBar"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+       
+        <section id="inventory" class="section hidden">
+
+            <div class="section-header">
+                <div>
+                    <h2>Inventario</h2>
+                    <p>Consulta el stock actual de los productos.</p>
+                </div>
+            </div>
+
+            <div class="toolbar">
+
+                <input
+                    type="text"
+                    id="inventorySearch"
+                    placeholder="Buscar producto..."
+                >
+
+                <select id="inventoryFilter">
+                    <option value="all">Todos</option>
+                    <option value="critical">Stock crítico</option>
+                    <option value="ok">Stock normal</option>
+                    <option value="expiry">Próximo a vencer</option>
+                </select>
+
+            </div>
+
+            <div class="table-container">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Producto</th>
+                            <th>Presentación</th>
+                            <th>Stock</th>
+                            <th>Mínimo</th>
+                            <th>Físico</th>
+                            <th>Vencimiento</th>
+                            <th>Estado</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="inventoryTable"></tbody>
+                </table>
+
+            </div>
+
+        </section>
+
+
+      
+        <section id="entries" class="section hidden">
+
+            <div class="section-header">
+                <div>
+                    <h2>Registrar ingreso</h2>
+                    <p>Registra productos recibidos de un proveedor.</p>
+                </div>
+            </div>
+
+            <div class="form-panel">
+
+                <form id="entryForm">
+
+                    <label>Producto</label>
+                    <select id="entryProduct" required></select>
+
+                    <label>Cantidad recibida</label>
+                    <input
+                        type="number"
+                        id="entryQuantity"
+                        min="1"
+                        required
+                    >
+
+                    <label>Proveedor</label>
+                    <select id="entrySupplier" required></select>
+
+                    <label>Fecha de ingreso</label>
+                    <input
+                        type="date"
+                        id="entryDate"
+                        required
+                    >
+
+                    <label>Fecha de vencimiento</label>
+                    <input
+                        type="date"
+                        id="entryExpiry"
+                        required
+                    >
+
+                    <button type="submit">
+                        Registrar ingreso
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+
+     
+        <section id="sales" class="section hidden">
+
+            <div class="section-header">
+                <div>
+                    <h2>Registrar venta / salida</h2>
+                    <p>
+                        Registra una salida y actualiza automáticamente
+                        el stock.
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-panel">
+
+                <form id="saleForm">
+
+                    <label>Producto</label>
+                    <select id="saleProduct" required></select>
+
+                    <label>Cantidad</label>
+                    <input
+                        type="number"
+                        id="saleQuantity"
+                        min="1"
+                        required
+                    >
+
+                    <label>Fecha</label>
+                    <input
+                        type="date"
+                        id="saleDate"
+                        required
+                    >
+
+                    <button type="submit">
+                        Registrar venta
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+
+        
+        <section id="expiry" class="section hidden">
+
+            <div class="section-header">
+                <div>
+                    <h2>Control de vencimientos</h2>
+                    <p>
+                        Productos próximos a vencer.
+                    </p>
+                </div>
+            </div>
+
+            <div class="table-container">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Presentación</th>
+                            <th>Stock</th>
+                            <th>Vencimiento</th>
+                            <th>Días restantes</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="expiryTable"></tbody>
+                </table>
+
+            </div>
+
+        </section>
+
+
+     
+        <section id="history" class="section hidden">
+
+            <div class="section-header">
+                <div>
+                    <h2>Historial de movimientos</h2>
+                    <p>
+                        Registro de entradas y salidas.
+                    </p>
+                </div>
+            </div>
+
+            <div class="table-container">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Proveedor</th>
+                            <th>Usuario</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="historyTable"></tbody>
+                </table>
+
+            </div>
+
+        </section>
+
+
+     
+        <section id="suppliers" class="section hidden">
+
+            <div class="section-header">
+
+                <div>
+                    <h2>Proveedores</h2>
+                    <p>
+                        Administración de proveedores.
+                    </p>
+                </div>
+
+                <button id="addSupplierBtn">
+                    + Nuevo proveedor
+                </button>
+
+            </div>
+
+            <div class="table-container">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Proveedor</th>
+                            <th>Contacto</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="supplierTable"></tbody>
+                </table>
+
+            </div>
+
+        </section>
+
+
+   
+        <section id="reports" class="section hidden">
+
+            <div class="section-header">
+                <div>
+                    <h2>Reportes</h2>
+                    <p>
+                        Información general del inventario.
+                    </p>
+                </div>
+
+                <button onclick="window.print()">
+                     Imprimir / PDF
+                </button>
+            </div>
+
+            <div id="reportsContent"></div>
+
+        </section>
+
+
+   
+        <section id="settings" class="section hidden">
+
+            <div class="section-header">
+                <div>
+                    <h2>Stock mínimo</h2>
+                    <p>
+                        Configura el nivel mínimo de cada producto.
+                    </p>
+                </div>
+            </div>
+
+            <div class="table-container">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Stock actual</th>
+                            <th>Stock mínimo</th>
+                            <th>Nuevo mínimo</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="settingsTable"></tbody>
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+</div>
+
+
+<div id="modal" class="modal hidden">
+
+    <div class="modal-content">
+
+        <button id="closeModal" class="close">
+            ×
+        </button>
+
+        <div id="modalBody"></div>
+
+    </div>
+
+</div>
+
+
+<div id="toast"></div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
